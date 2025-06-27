@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import * as XLSX from 'xlsx'
 import './App.css'
+import config from './config.js';
 
 // --- ICONS ---
 const UploadIcon = () => (
@@ -232,7 +233,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', selectedFile);
     try {
-      const uploadResponse = await fetch('http://localhost:8000/upload-file', { method: 'POST', body: formData });
+      const uploadResponse = await fetch(`${config.apiBaseUrl}/upload-file`, { method: 'POST', body: formData });
       if (!uploadResponse.ok) throw new Error(`Upload failed: ${uploadResponse.statusText}`);
       const newUploadResult = await uploadResponse.json();
       setIsUploading(false);
@@ -242,7 +243,7 @@ function App() {
         prompt: transformPrompt.trim(),
         ...(tabName.trim() && { tab_name: tabName.trim() }),
       };
-      const transformResponse = await fetch('http://localhost:8000/transform-excel', {
+      const transformResponse = await fetch(`${config.apiBaseUrl}/transform-excel`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
       if (!transformResponse.ok) throw new Error(`Transformation failed: ${transformResponse.statusText}`);
